@@ -1,0 +1,64 @@
+<mat-drawer-container class="size-full">
+  <div class="h-full p-6 flex flex-col">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold">Restaurantes</h1>
+      <div class="space-x-8">
+        @if (selectedRestaurant(); as products) {
+          <button mat-flat-button (click)="openProductForm()" class="self-end">
+            Agregar Producto
+          </button>
+        }
+        <button mat-flat-button (click)="openRestaurantForm()">Agregar restaurante</button>
+      </div>
+    </div>
+
+    <section class="flex-1 flex gap-8">
+      <div class="bg-gray-800/50 p-8 rounded-lg">
+        <restaurant-list [restaurants]="restaurants()" (selectedRestaurant)="select($event)" />
+      </div>
+      <div class="bg-gray-800/50 flex flex-col flex-1 p-8 space-y-4 rounded-lg">
+        <h1 class="h-8 text-center text-2xl tracking-widest font-semibold">
+          {{ selectedRestaurant()?.name.toUpperCase() }}
+        </h1>
+
+        <mat-tab-group class="flex-1">
+          <mat-tab label="Productos">
+            <div class="py-6">
+              <product-list>
+                @for (product of products(); track product.id) {
+                  <product-card [product]="product" />
+                }
+              </product-list>
+            </div>
+          </mat-tab>
+
+          <mat-tab label="Ordenes" class="h-full bg-red-400!">
+            <restaurant-dashboard [restaurant]="selectedRestaurant()" />
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+    </section>
+  </div>
+
+  <mat-drawer #drawer position="end" mode="over" class="w-auto">
+    <div class="p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-semibold">Nuevo {{ drawerContent() }}</h2>
+        <button mat-icon-button (click)="drawer.close()">✕</button>
+      </div>
+      @switch (drawerContent()) {
+        @case ('restaurante') {
+          <restaurant-form (restaurantCreated)="addRestaurant($event); drawer.close()" />
+        }
+        @case ('producto') {
+          @if (selectedRestaurant(); as restaurant) {
+            <product-form
+              [restaurantId]="restaurant.id"
+              (productCreated)="getProducts(); drawer.close()"
+            />
+          }
+        }
+      }
+    </div>
+  </mat-drawer>
+</mat-drawer-container>

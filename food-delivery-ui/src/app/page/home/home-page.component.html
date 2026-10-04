@@ -1,0 +1,18 @@
+<div class="size-full flex flex-col gap-8 p-8">
+  <!-- Cliente -->
+  <section class="bg-gray-800/50 rounded-xl overflow-hidden">
+    <customer-card (selectedCustomer)="setCustomer($event)" />
+  </section>
+
+  <div class="flex-1 flex gap-8">
+    <!-- Catalogo -->
+    <section class="bg-gray-800/50 w-full p-8 space-y-6 rounded-xl overflow-hidden">
+      <product-catalog />
+    </section>
+
+    <!-- Carrito -->
+    <section class="bg-gray-800/50 w-1/4 rounded-xl">
+      <cart />
+    </section>
+  </div>
+</div>

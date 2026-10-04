@@ -1,0 +1,8 @@
+export enum ProductCategory {
+  COMIDA = 'COMIDA',
+  ENTRADA = 'ENTRADA',
+  PLATO_FUERTE = 'PLATO_FUERTE',
+  POSTRE = 'POSTRE',
+  BEBIDA = 'BEBIDA',
+  COMPLEMENTO = 'COMPLEMENTO',
+}

@@ -1,0 +1,14 @@
+<section class="size-full relative min-w-sm">
+  <div class="absolute w-full top-0 bottom-0 overflow-y-auto flex flex-col gap-4 scrollbar-none">
+    @for (restaurant of restaurants(); track restaurant.name) {
+      <article
+        class="bg-black/20 w-full max-w-md rounded-lg p-4 space-y-2 cursor-pointer hover:bg-black/30"
+        (click)="select(restaurant)"
+      >
+        <h2 class="text-xl">{{ restaurant.name }}</h2>
+        <p>{{ restaurant.address }}</p>
+        <p>{{ restaurant.phone }}</p>
+      </article>
+    }
+  </div>
+</section>

@@ -1,0 +1,51 @@
+<form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="space-y-4">
+  <!-- <mat-card class="m-auto min-w-sm w-full max-w-2xl px-6 py-8 space-y-8"> -->
+
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>Nombre</mat-label>
+    <input matInput formControlName="name" />
+    @if (productForm.controls.name.invalid && productForm.controls.name.touched) {
+      <mat-error>El nombre es obligatorio. </mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>Descripcion</mat-label>
+    <input matInput formControlName="description" />
+    @if (productForm.controls.description.invalid && productForm.controls.description.touched) {
+      <mat-error>El numero es obligatorio y debe tener 10 digitos. </mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>Precio</mat-label>
+    <input matInput formControlName="price" />
+    @if (productForm.controls.price.invalid && productForm.controls.price.touched) {
+      <mat-error>La dirección es obligatoria. </mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="w-full">
+    <mat-label>Categoria</mat-label>
+    <mat-select>
+      @for (category of productCategories; track category) {
+        <mat-option [value]="category">
+          {{ category }}
+        </mat-option>
+      }
+    </mat-select>
+    @if (productForm.controls.category.invalid && productForm.controls.category.touched) {
+      <mat-error> La hora de apertura es obligatoria. </mat-error>
+    }
+  </mat-form-field>
+
+  <button
+    mat-raised-button
+    color="primary"
+    type="submit"
+    class="w-full"
+    [disabled]="productForm.invalid"
+  >
+    Guardar
+  </button>
+</form>

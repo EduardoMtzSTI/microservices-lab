@@ -1,0 +1,15 @@
+<article class="size-full space-y-6">
+  @for (menu of menus(); track $index) {
+    <div class="w-full flex flex-col gap-6">
+      <section class="bg-gray-600/30 p-2 rounded-sm">
+        <h1 class="text-xl">{{ menu.restaurant.name }}</h1>
+        <p>{{ menu.restaurant.openingTime | time }} - {{ menu.restaurant.closingTime | time }}</p>
+      </section>
+      <product-list>
+        @for (product of menu.products; track $index) {
+          <product-card-interactive [product]="product" [onAdd]="addToCart" />
+        }
+      </product-list>
+    </div>
+  }
+</article>

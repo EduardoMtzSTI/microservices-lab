@@ -1,0 +1,95 @@
+<article class="mx-auto min-w-sm w-1/2 max-w-2xl px-6 py-8">
+  <div class="mb-8 text-center">
+    <h1 class="text-3xl font-bold text-slate-900">Register Customer</h1>
+
+    <p class="mt-2 text-slate-600">Create a new customer account.</p>
+  </div>
+
+  <form
+    [formGroup]="customerForm"
+    (ngSubmit)="onSubmit()"
+    class="space-y-6 rounded-xl bg-white p-8 shadow-md"
+  >
+    <!-- Fullname -->
+    <div>
+      <label for="name" class="mb-2 block text-sm font-medium text-slate-700"> Full name </label>
+
+      <input
+        id="fullName"
+        type="text"
+        formControlName="fullName"
+        placeholder="Juan Pérez"
+        class="w-full rounded-lg border border-slate-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+      />
+
+      @if (customerForm.controls.fullName.invalid && customerForm.controls.fullName.touched) {
+        <p class="mt-1 text-sm text-red-600">
+          Full name is required and must contain at least 3 characters.
+        </p>
+      }
+    </div>
+
+    <!-- Email -->
+    <div>
+      <label for="email" class="mb-2 block text-sm font-medium text-slate-700"> Email </label>
+
+      <input
+        id="email"
+        type="email"
+        formControlName="email"
+        placeholder="juan.perez@gmail.com"
+        class="w-full rounded-lg border border-slate-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+      />
+
+      @if (customerForm.controls.email.invalid && customerForm.controls.email.touched) {
+        <p class="mt-1 text-sm text-red-600">Please enter a valid email.</p>
+      }
+    </div>
+
+    <!-- Number -->
+    <div>
+      <label for="number" class="mb-2 block text-sm font-medium text-slate-700">
+        Phone number
+      </label>
+
+      <input
+        id="number"
+        type="tel"
+        formControlName="number"
+        placeholder="0123456789"
+        maxlength="10"
+        class="w-full rounded-lg border border-slate-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+      />
+
+      @if (customerForm.controls.number.invalid && customerForm.controls.number.touched) {
+        <p class="mt-1 text-sm text-red-600">Phone number must contain exactly 8 digits.</p>
+      }
+    </div>
+
+    <!-- Address -->
+    <div>
+      <label for="address" class="mb-2 block text-sm font-medium text-slate-700"> Address </label>
+
+      <textarea
+        id="address"
+        formControlName="address"
+        rows="4"
+        placeholder="Enter customer's address"
+        class="w-full resize-none rounded-lg border border-slate-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+      ></textarea>
+
+      @if (customerForm.controls.address.invalid && customerForm.controls.address.touched) {
+        <p class="mt-1 text-sm text-red-600">Address is required.</p>
+      }
+    </div>
+
+    <!-- Submit -->
+    <button
+      type="submit"
+      [disabled]="customerForm.invalid"
+      class="w-full rounded-lg bg-blue-600 px-5 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+    >
+      Register Customer
+    </button>
+  </form>
+</article>

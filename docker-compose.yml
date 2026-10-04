@@ -1,0 +1,82 @@
+version: "3.8"
+
+services:
+
+  postgres:
+    image: postgres:18
+    container_name: postgres_delivery
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: food-delivery
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_delivery_data:/var/lib/postgresql
+
+  redis:
+    image: redis:7-alpine
+    container_name: notification-redis
+    ports:
+      - "6379:6379"
+    command: [ "redis-server", "--appendonly", "yes" ]
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  kafka:
+    image: confluentinc/cp-kafka:7.8.3
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      # Activa el modo KRaft, que elimina la dependencia de Zookeeper (Kafka gestiona su propio metadata)
+      KAFKA_KRAFT_MODE: 'true'
+
+      # Identificador único del clúster de Kafka, requerido por KRaft (se genera una sola vez, en Base64)
+      CLUSTER_ID: '1L6g7nGhU-eAKfL--X25wo'
+      # ID numérico único de este nodo dentro del clúster (obligatorio en KRaft, aunque sea un solo broker)
+      KAFKA_NODE_ID: 1
+
+      # Este nodo cumple ambos roles: procesa mensajes (broker) y gestiona metadata del clúster (controller)
+      KAFKA_PROCESS_ROLES: broker,controller
+      # Define quiénes participan en la elección del controller: nodo 1, en el host "kafka", puerto 9093
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      # Factor de replicación del tópico interno de offsets; 1 es válido solo porque hay un único broker (en producción sería 3)
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+      # Kafka escucha en tres puertos: 9092 (clientes externos al host), 29092 (clientes dentro de la red Docker, como Kafka UI) y 9093 (comunicación del controller)
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,BROKER://0.0.0.0:29092,CONTROLLER://0.0.0.0:9093
+      # Direcciones que Kafka "anuncia": localhost:9092 para tus microservicios Spring Boot en el host, kafka:29092 para otros contenedores de esta misma red
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,BROKER://kafka:29092
+      # Define el protocolo de seguridad de cada listener; usamos PLAINTEXT (sin cifrado) en los tres porque es un entorno de laboratorio
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,BROKER:PLAINTEXT,CONTROLLER:PLAINTEXT
+      # Listener que usarían los brokers para comunicarse entre sí si hubiera más de uno; aquí solo aplica en teoría, pero es buena práctica declararlo
+      KAFKA_INTER_BROKER_LISTENER_NAME: BROKER
+      # Le indica a Kafka cuál de los listeners definidos arriba se usa exclusivamente para tráfico del controller
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+
+      KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
+
+    volumes:
+      - kafka_kraft:/var/lib/kafka/data
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    depends_on:
+      - kafka
+    ports:
+      - "8070:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local  # Nombre visible del clúster dentro del panel de Kafka UI
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092  # Le dice a Kafka UI cómo conectarse al broker, usando el listener interno de la red de Docker (no localhost, porque Kafka UI corre dentro de un contenedor)
+
+volumes:
+  postgres_delivery_data:
+  kafka_kraft:
+  redis-data:

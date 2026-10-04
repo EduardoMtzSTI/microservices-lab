@@ -1,0 +1,18 @@
+<article class="size-full p-8 rounded-xl flex flex-col gap-4">
+  <h1 class="text-2xl text-center">Carrito</h1>
+  <div class="flex-1 relative overflow-y-auto">
+    <ul class="w-full absolute top-0 bottom-0 text-center space-y-1">
+      @for (item of cart(); track item.id) {
+        <li
+          class="bg-blue-900/50 opacity-90 p-3 flex justify-between items-center border-b-2 border-red-500 text-lg rounded-md"
+        >
+          {{ item.name }}
+          <button mat-flat-button class="bg-red-500! text-red-100!" (click)="removeFromCart(item)">
+            Eliminar
+          </button>
+        </li>
+      }
+    </ul>
+  </div>
+  <button mat-flat-button class="w-full" (click)="sendOrder()">Ordenar</button>
+</article>

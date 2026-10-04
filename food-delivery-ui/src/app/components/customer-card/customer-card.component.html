@@ -1,0 +1,22 @@
+<article class="w-full p-6 flex gap-6">
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label>Cliente</mat-label>
+
+    <mat-select (selectionChange)="selectCustomer($event.value)">
+      @for (customer of customers(); track customer.id) {
+        <mat-option [value]="customer">
+          {{ customer.fullName }}
+        </mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  @if (currentCustomer(); as customer) {
+    <div class="w-full flex gap-8 justify-end items-center text-lg">
+      <p>Email: {{ customer.email }}</p>
+      |
+      <p>Numero: {{ customer.number }}</p>
+      |
+      <p>Direción: {{ customer.address }}</p>
+    </div>
+  }
+</article>

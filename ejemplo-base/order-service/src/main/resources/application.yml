@@ -1,0 +1,40 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: order-service
+
+  # --- Conexión a PostgreSQL ---
+  datasource:
+    url: jdbc:postgresql://localhost:5433/order_db
+    username: order_user
+    password: order_pass
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update   # Crea/actualiza automáticamente orders, order_items y outbox_events (solo recomendable en dev/lab)
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  # --- Conexión a Kafka ---
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      # Ambos como String: el OutboxRelayScheduler ya recibe el evento serializado
+      # a JSON desde la tabla outbox, así que Kafka no necesita volver a serializarlo.
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: all
+      properties:
+        enable.idempotence: true
+
+app:
+  kafka:
+    topic:
+      order-created: order.created
+  outbox:
+    relay-interval-ms: 2000   # Cada cuánto el OutboxRelayScheduler revisa si hay eventos pendientes
