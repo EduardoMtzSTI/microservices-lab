@@ -1,3 +1,7 @@
+# microservices-lab
+
+Aplicación de entrega de comida creada con microservicios con spring boot y UI con Angular
+
 Idea general del dominio
 
 Un pedido pasa por varios estados, y cada cambio de estado es un evento perfecto para Kafka:
@@ -13,15 +17,15 @@ notification-service — envía notificaciones (consumer puro, no expone API)
 api-gateway — punto de entrada único (Spring Cloud Gateway, Kong, o Express Gateway)
 
 Tópicos de Kafka
-Topic	                Productor           Consumidores
-order.created	        order-service	    payment-service, notification-service
-payment.confirmed	    payment-service	    order-service, restaurant-service
-payment.failed	        payment-service 	order-service, notification-service
-restaurant.accepted	    restaurant-service	order-service, delivery-service
-order.ready	            restaurant-service	delivery-service
-delivery.assigned	    delivery-service	order-service, notification-service
-delivery.status.updated	delivery-service	order-service, notification-service
-order.delivered	        delivery-service	order-service, notification-service
+Topic Productor Consumidores
+order.created order-service payment-service, notification-service
+payment.confirmed payment-service order-service, restaurant-service
+payment.failed payment-service order-service, notification-service
+restaurant.accepted restaurant-service order-service, delivery-service
+order.ready restaurant-service delivery-service
+delivery.assigned delivery-service order-service, notification-service
+delivery.status.updated delivery-service order-service, notification-service
+order.delivered delivery-service order-service, notification-service
 
 Patrones interesantes para aplicar
 Saga pattern (coreografiada): cada servicio reacciona a eventos y publica el siguiente, sin un orquestador central. Es el patrón más natural con Kafka.
@@ -34,7 +38,6 @@ Lenguaje: Java + Spring Boot (Spring Kafka) es lo más común en tutoriales, per
 Kafka: Docker Compose con Kafka + Zookeeper (o KRaft mode, sin Zookeeper, más moderno) + Kafka UI para visualizar tópicos.
 Bases de datos: una por servicio (Postgres o MongoDB), siguiendo "database per service".
 Opcional avanzado: Schema Registry con Avro para versionar los esquemas de eventos.
-
 
 1-Levantar la infraestructura base
 Docker Compose con Kafka (modo KRaft, sin Zookeeper), Kafka UI (para ver tópicos y mensajes visualmente), y una base de datos Postgres por servicio. Verifica que puedes crear un tópico manualmente y publicar/consumir un mensaje de prueba con la consola de Kafka antes de escribir código.
