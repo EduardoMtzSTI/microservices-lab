@@ -25,8 +25,6 @@ public class OrderController {
     private final CreateOrderUseCase createOrderUseCase;
     private final GetOrderUseCase getOrderUseCase;
     private final GetTodayRestaurantOrdersUseCase getTodayRestaurantOrdersUseCase;
-    private final AcceptOrderUseCase acceptOrderUseCase;
-    private final MarkOrderReadyForPickupUseCase markOrderReadyForPickupUseCase;
     private final OrderWebMapper orderWebMapper;
 
     @PostMapping
@@ -58,17 +56,6 @@ public class OrderController {
         return ResponseEntity.ok(orderResponses);
     }
 
-    @PatchMapping("/{id}/accept")
-    public ResponseEntity<OrderResponse> acceptOrder(@PathVariable UUID id) {
-        Order order = acceptOrderUseCase.accept(id);
-        return ResponseEntity.ok(orderWebMapper.toResponse(order));
-    }
-
-    @PatchMapping("/{id}/ready")
-    public ResponseEntity<OrderResponse> markReady(@PathVariable UUID id) {
-        Order order = markOrderReadyForPickupUseCase.markReadyForPickup(id);
-        return ResponseEntity.ok(orderWebMapper.toResponse(order));
-    }
 
     @GetMapping("/health")
     public ResponseEntity<String> health() {

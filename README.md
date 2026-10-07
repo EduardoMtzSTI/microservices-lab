@@ -17,15 +17,15 @@ notification-service — envía notificaciones (consumer puro, no expone API)
 api-gateway — punto de entrada único (Spring Cloud Gateway, Kong, o Express Gateway)
 
 Tópicos de Kafka
-Topic Productor Consumidores
-order.created order-service payment-service, notification-service
-payment.confirmed payment-service order-service, restaurant-service
-payment.failed payment-service order-service, notification-service
-restaurant.accepted restaurant-service order-service, delivery-service
-order.ready restaurant-service delivery-service
-delivery.assigned delivery-service order-service, notification-service
-delivery.status.updated delivery-service order-service, notification-service
-order.delivered delivery-service order-service, notification-service
+Topic                   Productor           Consumidores
+order.created           order-service       payment-service, notification-service
+payment.confirmed       payment-service     order-service, restaurant-service
+payment.failed          payment-service     order-service, notification-service
+order.accepted          restaurant-service  order-service, delivery-service
+order.ready             restaurant-service  delivery-service
+delivery.assigned       delivery-service    order-service, notification-service
+delivery.status.updated delivery-service    order-service, notification-service
+order.delivered         delivery-service    order-service, notification-service
 
 Patrones interesantes para aplicar
 Saga pattern (coreografiada): cada servicio reacciona a eventos y publica el siguiente, sin un orquestador central. Es el patrón más natural con Kafka.

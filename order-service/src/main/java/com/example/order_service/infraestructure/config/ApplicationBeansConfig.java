@@ -3,13 +3,15 @@ package com.example.order_service.infraestructure.config;
 import com.example.order_service.aplication.port.in.AcceptOrderUseCase;
 import com.example.order_service.aplication.port.in.ConfirmOrderPaymentUseCase;
 import com.example.order_service.aplication.port.in.FailOrderPaymentUseCase;
+import com.example.order_service.aplication.port.in.MarkOrderReadyForPickupUseCase;
 import com.example.order_service.aplication.port.out.*;
 import com.example.order_service.aplication.service.OrderApplicationService;
 import com.example.order_service.infraestructure.catalog.RestaurantServiceProductCatalogAdapter;
 import com.example.order_service.infraestructure.customer.CustomerServiceLookupAdapter;
+import com.example.order_service.infraestructure.messaging.consumer.OrderReadyEventListener;
 import com.example.order_service.infraestructure.messaging.consumer.PaymentConfirmedEventListener;
 import com.example.order_service.infraestructure.messaging.consumer.PaymentFailedEventListener;
-import com.example.order_service.infraestructure.messaging.consumer.RestaurantAcceptedEventListener;
+import com.example.order_service.infraestructure.messaging.consumer.OrderAcceptedEventListener;
 import com.example.order_service.infraestructure.persistence.SpringUnitOfWork;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -72,11 +74,18 @@ public class ApplicationBeansConfig {
         return new PaymentFailedEventListener(failOrderPaymentUseCase, objectMapper);
     }
 
-    @Bean public RestaurantAcceptedEventListener restaurantAcceptedEventListener(
+    @Bean public OrderAcceptedEventListener restaurantAcceptedEventListener(
             AcceptOrderUseCase acceptOrderUseCase,
             ObjectMapper objectMapper
     ){
-        return new RestaurantAcceptedEventListener(acceptOrderUseCase,objectMapper);
+        return new OrderAcceptedEventListener(acceptOrderUseCase,objectMapper);
+    }
+
+    @Bean public OrderReadyEventListener orderReadyEventListener(
+            MarkOrderReadyForPickupUseCase markOrderReadyForPickupUseCase,
+            ObjectMapper objectMapper
+    ){
+        return new OrderReadyEventListener(markOrderReadyForPickupUseCase,objectMapper);
     }
 
 }

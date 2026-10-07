@@ -21,12 +21,4 @@ export class OrderService {
   getTodayRestaurantOrders(restaurantId: string): Observable<Order[]> {
     return this.http.get<Order[]>(this.orderUrl + '/restaurant/' + restaurantId + '/order/today');
   }
-
-  acceptOrder(id: string): Observable<Order> {
-    return this.http.patch<Order>(this.orderUrl + '/' + id + '/accept', null);
-  }
-
-  markAsReadyForPickup(id: string): Observable<Order> {
-    return this.http.patch<Order>(this.orderUrl + '/' + id + '/ready', null);
-  }
 }

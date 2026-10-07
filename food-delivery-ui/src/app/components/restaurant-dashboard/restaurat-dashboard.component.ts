@@ -1,24 +1,15 @@
-import {
-  Component,
-  computed,
-  effect,
-  inject,
-  input,
-  OnInit,
-  PLATFORM_ID,
-  signal,
-} from '@angular/core';
+import { Component, effect, inject, input, PLATFORM_ID, signal } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { NotificationSseService } from '../../services/notificationSse.service';
 import { OrderList } from '../order/order-list/order-list.component';
 import { OrderCardComponent } from '../order/order-card/order-card.component';
-import { Order, OrderItem } from '../../models/Order';
-import { Customer } from '../../models/Customer';
+import { Order } from '../../models/Order';
 import { OrderStatus } from '../../models/OrderStatus';
 import { Restaurant } from '../../models/Restaurant';
 import { OrderService } from '../../services/order.service';
 import { OrderNotificationComponent } from '../order-notification/order-notification.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { RestaurantService } from '../../services/restaura.service';
 
 @Component({
   selector: 'restaurant-dashboard',
@@ -27,6 +18,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './restaurant-dashboard.component.html',
 })
 export class RestaurantDashboardComponent {
+  private readonly restaurantService = inject(RestaurantService);
   private readonly orderService = inject(OrderService);
   private readonly snackBar = inject(MatSnackBar);
   private readonly sseService = inject(NotificationSseService);
@@ -34,45 +26,11 @@ export class RestaurantDashboardComponent {
   private readonly platformId = inject(PLATFORM_ID);
   private orderSound?: HTMLAudioElement;
 
-  restaurant = input<Restaurant | null>(null);
-
-  customer: Customer = {
-    id: 'asf-213-dfs',
-    fullName: 'Jose Perez',
-    email: 'joz@mail.com',
-    number: '4424516852',
-    address: 'Corregidora 204',
-  };
-
-  items: OrderItem[] = [
-    {
-      id: '123-asd',
-      productName: 'Gelatina de limon',
-      quantity: 1,
-      unitPrice: 15,
-    },
-    {
-      id: '123-432',
-      productName: 'Pay de queso',
-      quantity: 2,
-      unitPrice: 30,
-    },
-  ];
-
-  private readonly newOrderExample: Order = {
-    id: '654-sdd-6ad',
-    customer: this.customer,
-    currency: 'MXC',
-    items: this.items,
-    totalAmount: 45,
-    status: OrderStatus.PAYMENT_CONFIRMED,
-    createdAt: '12:22 pm',
-    updatedAt: '12:15 pm',
-  };
+  restaurant = input.required<Restaurant | null>();
 
   newOrders = signal<Order[]>([]);
-  acceptedOrders = signal<Order[]>([this.newOrderExample, this.newOrderExample]);
-  readyOrders = signal<Order[]>([this.newOrderExample, this.newOrderExample]);
+  acceptedOrders = signal<Order[]>([]);
+  readyOrders = signal<Order[]>([]);
 
   constructor() {
     if (isPlatformBrowser(this.platformId)) {
@@ -119,8 +77,10 @@ export class RestaurantDashboardComponent {
     return orders.filter((order) => order.status === status);
   }
 
-  acceptOrder(id: string): void {
-    this.orderService.acceptOrder(id).subscribe({
+  acceptOrder(orderId: string): void {
+    const restaurant = this.restaurant();
+    if (!restaurant) return;
+    this.restaurantService.acceptOrder(restaurant.id, orderId).subscribe({
       next: (order) => {
         // quitar orden de lista de nuevas ordenes
         this.newOrders.update((orders) => orders.filter((o) => o.id !== order.id));
@@ -135,8 +95,10 @@ export class RestaurantDashboardComponent {
 
   cancelOrder(id: string): void {}
 
-  markAsReadyForPickup(id: string): void {
-    this.orderService.markAsReadyForPickup(id).subscribe({
+  markAsReadyForPickup(orderId: string): void {
+    const restaurant = this.restaurant();
+    if (!restaurant) return;
+    this.restaurantService.markAsReadyForPickup(restaurant.id, orderId).subscribe({
       next: (order) => {
         // quitar ordenes de lista de ordenes aceptadas
         this.acceptedOrders.update((orders) => orders.filter((o) => o.id !== order.id));

@@ -51,7 +51,7 @@ public class Customer {
                 .email(data.email())
                 .number(data.number())
                 .address(data.address())
-                .status(CustomerStatus.ACTIVED)
+                .status(CustomerStatus.ACTIVE)
                 .createdAt(now)
                 .updatedAt(now)
                 .build();
