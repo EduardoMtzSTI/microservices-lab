@@ -2,10 +2,11 @@
   <section class="bg-orange-100 w-1/3 rounded-lg p-6 flex flex-col">
     <h2 class="text-center text-2xl mb-6">Nuevas</h2>
     <order-list>
-      @for (order of newOrders(); track $index) {
+      @for (props of newOrders(); track props.order.id) {
         <li>
           <order-card
-            [order]="order"
+            [order]="props.order"
+            [isProcessing]="props.isProcessing"
             (accept)="acceptOrder($event)"
             (cancel)="acceptOrder($event)"
           />
@@ -17,9 +18,13 @@
   <section class="bg-amber-100 w-1/3 rounded-lg p-6 flex flex-col">
     <h2 class="text-center text-2xl mb-6">Aceptadas</h2>
     <order-list>
-      @for (order of acceptedOrders(); track $index) {
+      @for (props of acceptedOrders(); track props.order.id) {
         <li>
-          <order-card [order]="order" (readyForPickup)="markAsReadyForPickup($event)" />
+          <order-card
+            [order]="props.order"
+            [isProcessing]="props.isProcessing"
+            (readyForPickup)="markAsReadyForPickup($event)"
+          />
         </li>
       }
     </order-list>
@@ -28,9 +33,9 @@
   <section class="bg-purple-100 w-1/3 rounded-lg p-6 flex flex-col">
     <h2 class="text-center text-2xl mb-6">Finalizadas</h2>
     <order-list>
-      @for (order of readyOrders(); track $index) {
+      @for (props of readyOrders(); track props.order.id) {
         <li>
-          <order-card [order]="order" />
+          <order-card [order]="props.order" />
         </li>
       }
     </order-list>

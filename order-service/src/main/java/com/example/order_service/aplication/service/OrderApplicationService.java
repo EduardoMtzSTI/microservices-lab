@@ -111,7 +111,9 @@ public class OrderApplicationService
         return unitOfWork.execute(()->{
             Order order = getOrder(id);
             order.confirmPayment();
-            return orderRepository.save(order);
+            Order orderUpdated = orderRepository.save(order);
+            orderEventPublisher.publishOrderStatusChange(orderUpdated);
+            return orderUpdated;
         });
     }
 
@@ -120,7 +122,9 @@ public class OrderApplicationService
         return unitOfWork.execute(()->{
             Order order = getOrder(id);
             order.failPayment();
-            return orderRepository.save(order);
+            Order orderUpdated = orderRepository.save(order);
+            orderEventPublisher.publishOrderStatusChange(orderUpdated);
+            return orderUpdated;
         });
     }
 
@@ -129,7 +133,9 @@ public class OrderApplicationService
         return unitOfWork.execute(()->{
             Order order = getOrder(id);
             order.accept();
-            return orderRepository.save(order);
+            Order orderUpdated = orderRepository.save(order);
+            orderEventPublisher.publishOrderStatusChange(orderUpdated);
+            return orderUpdated;
         });
     }
 

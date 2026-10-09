@@ -10,6 +10,7 @@ import { TimePipe } from '../../../shared/pipes/time.pipe';
 })
 export class OrderCardComponent {
   order = input.required<Order>();
+  isProcessing = input(false);
   accept = output<string>();
   cancel = output<string>();
   readyForPickup = output<string>();

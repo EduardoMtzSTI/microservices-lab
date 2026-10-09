@@ -86,7 +86,11 @@
         class="rounded-lg bg-green-300 px-4 py-2 text-sm font-semibold text-neutral-900 transition hover:bg-neutral-200"
         (click)="onAccept()"
       >
-        Aceptar pedido
+        @if (isProcessing()) {
+          Aceptando pedido...
+        } @else {
+          Aceptar pedido
+        }
       </button>
     }
 
@@ -96,7 +100,11 @@
         class="rounded-lg bg-green-300 px-4 py-2 text-sm font-semibold text-neutral-900 transition hover:bg-neutral-200"
         (click)="onReadyForPickup()"
       >
-        Marcar listo
+        @if (isProcessing()) {
+          Marcando como listo...
+        } @else {
+          Marcar listo
+        }
       </button>
     }
 

@@ -4,5 +4,6 @@ import com.example.order_service.domain.model.Order;
 
 public interface OrderEventPublisherPort {
     void publishOrderCreated(Order order);
+    void publishOrderStatusChange(Order order);
 }
 

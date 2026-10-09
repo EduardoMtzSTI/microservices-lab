@@ -30,7 +30,7 @@ public class PaymentConfirmedEventListener {
 
         sendNotificationUseCase.send(customerCommand);
 
-        SendNotificationCommand restaurantCcommand = SendNotificationCommand.builder()
+        SendNotificationCommand restaurantCommand = SendNotificationCommand.builder()
                 .recipientId(event.restaurantId().toString())
                 .eventType("payment.confirmed")
                 .aggregateId(event.orderId().toString())
@@ -38,7 +38,7 @@ public class PaymentConfirmedEventListener {
                 .message("Nueva orden")
                 .build();
 
-        sendNotificationUseCase.send(restaurantCcommand);
+        sendNotificationUseCase.send(restaurantCommand);
     }
 
 }

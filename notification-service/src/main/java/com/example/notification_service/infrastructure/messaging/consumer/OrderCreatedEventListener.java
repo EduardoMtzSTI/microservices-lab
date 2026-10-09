@@ -14,9 +14,8 @@ public class OrderCreatedEventListener {
 
     private final SendNotificationUseCase sendNotificationUseCase;
     private final ObjectMapper objectMapper;
-    private static final String TOPIC_NAME = "${app.kafka.topic.order-created}";
 
-    @KafkaListener(topics = TOPIC_NAME, groupId = "notification-service")
+    @KafkaListener(topics = "${app.kafka.topic.order-created}", groupId = "notification-service")
     public void onOrderCreated(String payload) throws JacksonException{
 
         OrderCreatedEvent event = objectMapper.readValue(payload,OrderCreatedEvent.class);
@@ -24,7 +23,7 @@ public class OrderCreatedEventListener {
 
         SendNotificationCommand command = SendNotificationCommand.builder()
                 .recipientId(String.valueOf(event.customerId()))
-                .eventType(TOPIC_NAME)
+                .eventType("order-created")
                 .aggregateId(orderId)
                 .channel(NotificationChannel.SMS)
                 .message("Nuevo pedido recivido: " + orderId)

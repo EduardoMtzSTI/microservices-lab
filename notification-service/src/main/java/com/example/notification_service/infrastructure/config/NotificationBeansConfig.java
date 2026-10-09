@@ -4,6 +4,7 @@ import com.example.notification_service.aplication.port.out.*;
 import com.example.notification_service.aplication.service.NotificationApplicationService;
 import com.example.notification_service.domain.model.NotificationChannel;
 import com.example.notification_service.infrastructure.messaging.consumer.OrderCreatedEventListener;
+import com.example.notification_service.infrastructure.messaging.consumer.OrderStatusChangedListener;
 import com.example.notification_service.infrastructure.messaging.consumer.PaymentConfirmedEventListener;
 import com.example.notification_service.infrastructure.messaging.consumer.PaymentFailedEventListener;
 import com.example.notification_service.infrastructure.persistence.SpringUnitOfWork;
@@ -63,6 +64,13 @@ public class NotificationBeansConfig {
             NotificationApplicationService notificationApplicationService,
             ObjectMapper objectMapper) {
         return new PaymentFailedEventListener(notificationApplicationService, objectMapper);
+    }
+
+    @Bean
+    public OrderStatusChangedListener orderStatusChangedListener(
+            NotificationApplicationService notificationApplicationService,
+            ObjectMapper objectMapper) {
+        return new OrderStatusChangedListener(notificationApplicationService, objectMapper);
     }
 
     @Bean
